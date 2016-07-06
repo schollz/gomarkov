@@ -94,8 +94,6 @@ func (c *Chain) Build(r io.Reader) {
 			break
 		}
 		key := p.String()
-    fmt.Println(key)
-    fmt.Println(s)
 		c.chain[key] = append(c.chain[key], s)
 		p.Shift(s)
 	}
@@ -113,6 +111,9 @@ func (c *Chain) Generate(n int) string {
 		next := choices[rand.Intn(len(choices))]
 		words = append(words, next)
 		p.Shift(next)
+    if strings.Contains(next,"~~~") {
+      break
+    }
 	}
 	return strings.Join(words, " ")
 }
@@ -128,5 +129,5 @@ func main() {
 	c := NewChain(*prefixLen)     // Initialize a new Chain.
 	c.Build(os.Stdin)             // Build chains from standard input.
 	text := c.Generate(*numWords) // Generate text.
-	fmt.Println(text)             // Write text to standard output.
+	fmt.Println(strings.Replace(strings.Replace(text,"~~~","\n",-1),"``` ","",-1))             // Write text to standard output.
 }
